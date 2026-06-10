@@ -1,0 +1,24 @@
+{
+  "identifier" : "08C2D274-840B-41C4-97A5-C0F82F50252F",
+  "nonRenewingSubscriptions" : [],
+  "products" : [
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : true,
+      "internalID" : "A59ED61A-9665-4C54-B838-600E92688BE4",
+      "localizations" : [
+        {
+          "description" : "Get 3 saves every run instead of 1. One-time purchase, shared with your Family.",
+          "displayName" : "Unlock 3 Revives",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "io.witlox.teeter.unlock3",
+      "referenceName" : "Unlock 3 Revives",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : { "_failTransactionsEnabled" : false },
+  "subscriptionGroups" : [],
+  "version" : { "major" : 3, "minor" : 0 }
+}
