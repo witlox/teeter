@@ -69,6 +69,7 @@ struct BrassButton: View {
 
 struct MenuView: View {
     @EnvironmentObject var model: GameViewModel
+    @State private var showLeaderboard = false
     var body: some View {
         VStack(spacing: 18) {
             Spacer()
@@ -85,10 +86,14 @@ struct MenuView: View {
             }
             Spacer()
             BrassButton(title: "BUILD") { model.startRun() }
+            BrassButton(title: "LEADERBOARD", wide: false) { showLeaderboard = true }
             Text("\(Tuning.catchesPerRun) saves per run")
                 .font(Theme.body(13)).foregroundColor(Theme.patina)
             Spacer().frame(height: 30)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .sheet(isPresented: $showLeaderboard) {
+            LeaderboardSheet(isPresented: $showLeaderboard).ignoresSafeArea()
+        }
     }
 }

@@ -52,6 +52,7 @@ struct GameOverView: View {
 struct CashOutView: View {
     @EnvironmentObject var model: GameViewModel
     @State private var sharing = false
+    @State private var showLeaderboard = false
     var body: some View {
         ZStack {
             Theme.ink.opacity(0.28).ignoresSafeArea()
@@ -65,6 +66,8 @@ struct CashOutView: View {
                 }
                 BrassButton(title: "SHARE TOWER") { sharing = true }
                 BrassButton(title: "BUILD AGAIN") { model.startRun() }
+                Button("leaderboard") { showLeaderboard = true }
+                    .font(Theme.body(14)).foregroundColor(Theme.brassHi)
                 Button("menu") { model.backToMenu() }
                     .font(Theme.body(14)).foregroundColor(Theme.brassHi)
             }
@@ -72,6 +75,9 @@ struct CashOutView: View {
         .sheet(isPresented: $sharing) {
             ShareSheet(items: [ShareCard.render(height: model.bankedHeight,
                                                 tower: model.shareImage)])
+        }
+        .sheet(isPresented: $showLeaderboard) {
+            LeaderboardSheet(isPresented: $showLeaderboard).ignoresSafeArea()
         }
     }
 }

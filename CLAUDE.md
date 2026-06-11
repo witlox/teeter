@@ -25,8 +25,9 @@ free** — no IAP, no ads, no third-party SDKs. Ships on **iPhone and iPad** (po
    tension on the third save.
 4. **Fully free — no IAP, NO ADS, NO third-party SDKs.** Do not add StoreKit, ad SDKs,
    banners, interstitials, rewarded video, analytics SDKs, or any "unlock more"
-   monetization. The whole point of this build is friction-free: nothing to review,
-   nothing to gate, nothing to track. Anything that would have a paid version stays out.
+   monetization. *Apple's own frameworks (GameKit / Game Center, etc.) are OK — they
+   aren't third-party SDKs.* But anything that would have a paid version, anything from
+   a non-Apple vendor, anything that tracks the player across apps — stays out.
 5. **Two legible difficulty axes only:** shape awkwardness (`Tuning.shapeMenu`) and crane
    swing growth (`Crane.configure`). The "weird gravity" idea is deliberately expressed as
    *crane swing*, not actual gravity changes. Don't add a third hidden axis.

@@ -34,13 +34,18 @@ final class GameViewModel: ObservableObject {
 
     // Systems
     private let scores = ScoreStore()
+    let gameCenter = GameCenter()
 
     /// Set by RootView once the SpriteKit scene exists, so UI buttons can drive gameplay.
     weak var scene: GameScene?
 
     init() { self.best = scores.best }
 
-    func boot() async {}
+    func boot() async {
+        // Kick off Game Center auth. If the player isn't signed in or declines,
+        // the rest of the game runs unchanged — leaderboard is an optional layer.
+        gameCenter.authenticate()
+    }
 
     // MARK: - Intents from UI
 
@@ -58,6 +63,10 @@ final class GameViewModel: ObservableObject {
         guard phase == .playing else { return }
         bankedHeight = height
         if height > best { best = height; scores.best = height }
+        // Push every banked height; Apple keeps the per-player max automatically.
+        // Submitting always (not just on new-best) means a deleted-and-reinstalled
+        // app still reflects your real historical best from the cloud.
+        gameCenter.submit(score: height)
         shareImage = scene?.snapshotTower()
         phase = .cashedOut
         scene?.freeze()

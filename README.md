@@ -36,6 +36,11 @@ All balance numbers live in `Sources/Scene/Tuning.swift`. Start there.
 Every run gives **3 saves ("catches")** for free. Spend one to snap the tower back to its
 last stable state. Run out and topple — bank zero.
 
+## Leaderboard
+Game Center leaderboard (`io.witlox.teeter.tower_height`) records your best banked tower
+height. Game Center is Apple's own framework — no third-party SDK is involved. If you're
+not signed in or decline, the game runs unchanged.
+
 ## Design
 See `DESIGN.md` for why the mechanics are what they are, and `CLAUDE.md` for the invariants
 not to break.
