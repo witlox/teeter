@@ -10,7 +10,8 @@ breakout (Block Blast) only *looks* simple — it's tuned with thousands of A/B 
 Hyper-casual economics collapsed after Apple's ATT (iOS CPI is multiples of Android), and
 the genre moved to "hybrid-casual." Conclusion: with **no user-acquisition budget**, paid
 installs are not the plan. So the product *is* the marketing — the design must manufacture
-a shareable artifact. Goal set with eyes open: **fun side project, beer money is a bonus.**
+a shareable artifact. Goal set with eyes open: **fun side project, no revenue ambition,
+shipped because it should exist.**
 
 ## Core loop: press-your-luck, not endless drift
 Accumulate height, then choose when to bank. The tension is voluntary cash-out vs. one
@@ -44,29 +45,24 @@ On cash-out we render the standing tower into a framed steampunk share card with
 count and a challenge line. A picture out-performs a number on social surfaces, and it's
 the only "growth" lever a zero-budget game has.
 
-## Monetization (IAP-only, no ads)
-The model is deliberately ad-free, and the reasoning is specific to this game's situation:
-- **iOS audience.** iOS users decline tracking en masse (ATT), which both signals
-  ad-aversion and suppresses iOS ad eCPM, while iOS users pay far more readily per head.
-  On iOS specifically, an ad-free IAP model roughly matches or beats an ad model on revenue
-  once you account for retention — and wins decisively on simplicity and principle.
-- **No third-party SDK.** No AdMob, no mediation, no ATT prompt, no data-sharing, nothing to
-  maintain or get rejected in review. The game stays premium-feeling, which helps the one
-  growth lever a zero-UA game has (word-of-mouth + the share card).
-- **The product:** one non-consumable, **"Unlock 3 Revives" ($2.99), Family Sharing on.**
-  Every run gives **1 free save**; the unlock raises the per-run cap to **3**, forever.
-  It's a strict upgrade, never a penalty. Family Sharing is a free toggle (covers up to 6
-  household members from one purchase) — there is deliberately no higher-priced "family" SKU,
-  because Apple Family Sharing is not a tier you can sell.
-- **Placement over nagging.** The offer surfaces at the highest-intent moment — toppling
-  with no free save left ("I was that close"), where buying both unlocks and saves the
-  current run. Soft repeats sit on the game-over and menu screens. If it ever reads as a
-  nag, frequency-gate it; the per-run cap already self-limits how often it can appear.
+## Free, no IAP, no ads, no SDKs
+The game ships fully free. No in-app purchases, no ad networks, no analytics SDK, no
+third-party libraries of any kind. The reasoning is concrete to this build:
 
-A note on scale: at realistic zero-UA volume (hundreds to low-thousands of players) the
-absolute revenue from any model is tiny, so this choice is made for fit, simplicity, and
-sovereignty rather than for a revenue multiple. The real lever is distribution, not the
-monetization model.
+- **The App Store paid pipeline isn't worth it at this scale.** Banking and tax forms,
+  IAP review cycles, StoreKit testing, Family Sharing toggles, "restore purchases" edge
+  cases — every one of those is real engineering and real ongoing maintenance for a
+  hobby game whose realistic revenue is rounding-error tiny anyway. Cutting all of it
+  means the game ships faster and never needs a re-review for monetization changes.
+- **Ads are worse.** iOS users decline tracking en masse (ATT), which suppresses iOS ad
+  eCPM. Ads add an SDK, a privacy nutrition label, an ATT prompt, and an ongoing
+  dependency. None of that fits a premium-feeling steampunk press-your-luck game.
+- **Saves stay generous.** 3 catches per run, every run, no upsell. The cap is the only
+  friction; it preserves "die = 0" tension on the third save without ever needing a
+  paid tier above it. Players who lose can't blame anything but themselves.
+- **The share card is the entire growth lever.** A picture out-performs a number on
+  social surfaces, and it's the only "growth" lever a zero-UA, zero-monetization game
+  has — or needs.
 
 ## Steampunk, sketchy
 A characterful skin makes the share card distinctive without extra mechanics. The art is

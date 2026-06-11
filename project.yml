@@ -9,8 +9,9 @@ settings:
     MARKETING_VERSION: "1.0"
     CURRENT_PROJECT_VERSION: "1"
     SWIFT_VERSION: "5.9"
-    DEVELOPMENT_TEAM: ""              # <-- set your Apple Developer team id
-    TARGETED_DEVICE_FAMILY: "1"       # iPhone only
+    # DEVELOPMENT_TEAM is set via Configuration/Local.xcconfig (gitignored).
+    # bootstrap.sh seeds it from Local.xcconfig.example on first run.
+    TARGETED_DEVICE_FAMILY: "1,2"     # iPhone + iPad
 targets:
   Teeter:
     type: application
@@ -18,6 +19,9 @@ targets:
     deploymentTarget: "16.0"
     sources:
       - path: Sources
+    configFiles:
+      Debug: Configuration/Local.xcconfig
+      Release: Configuration/Local.xcconfig
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.witlox.teeter

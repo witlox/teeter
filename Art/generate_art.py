@@ -384,23 +384,66 @@ def build_sharecard_frame():
 
 
 def build_appicon():
-    W=H=1024
-    body=f'<rect width="{W}" height="{H}" fill="{PARCH}"/>'
-    body+=hatch(0,0,W,H,COPPER_DK,gap=26,opacity=0.06)
-    # big ghost gear behind
-    gp=gear_points(W*0.72,H*0.30,300,14,0.2)
-    body+=f'<path d="{sketch_path(gp,True,0.6)}" fill="{BRASS}" opacity="0.30" stroke="none"/>'
-    # a little leaning brass tower (3 blocks)
-    bx=W*0.34
-    sizes=[(300,0),(250,-26),(190,34)]
-    yb=H*0.80
-    for i,(s,off) in enumerate(sizes):
-        x=bx+off; y=yb - sum(z[0] for z in sizes[:i]) - 40*i
-        pts=[(x-s/2,y-s),(x+s/2,y-s),(x+s/2,y),(x-s/2,y)]
-        body+=filled_poly(pts, BRASS if i%2==0 else COPPER)
-        body+=sketch_outline(pts,True,INK,9,2,2.2)
-        body+=rivet(x-s/2+26,y-s+26,11);body+=rivet(x+s/2-26,y-s+26,11)
-        body+=rivet(x-s/2+26,y-26,11);body+=rivet(x+s/2-26,y-26,11)
+    """A press-your-luck tower under tension: 4 brass/copper blocks stacked
+    full-frame, the whole stack tilted hard enough that the reading at 60×60
+    is unmistakably 'about to fall'. Dropped the previous ghost-gear motif and
+    the off-frame top block — both were eating space without telling the story.
+    """
+    W = H = 1024
+    body = f'<rect width="{W}" height="{H}" fill="{PARCH}"/>'
+    body += hatch(0, 0, W, H, COPPER_DK, gap=28, opacity=0.05)
+
+    # base plinth (anchors the lean and reads as "the ground" at any scale)
+    pw, ph = W * 0.78, 64
+    px, py = (W - pw) / 2, H - 110
+    plinth = [(px, py), (px + pw, py), (px + pw, py + ph), (px, py + ph)]
+    body += filled_poly(plinth, BRASS_DK)
+    body += sketch_outline(plinth, True, INK, 5, 2, 2.0)
+
+    # leaning tower of 4 blocks (bottom→top: largest→smallest, alternating fills).
+    # Rotate the whole group around the plinth midpoint for a clean, unified tilt.
+    pivot_x = W / 2
+    pivot_y = py
+    tilt_deg = 11  # right-ward lean; strong enough to read, not so strong it looks broken
+    blocks = [
+        # (width, height, fill, hi)  bottom first
+        (480, 250, BRASS,  BRASS_HI),
+        (400, 230, COPPER, "#C9784E"),
+        (320, 210, BRASS,  BRASS_HI),
+        (240, 200, COPPER, "#C9784E"),
+    ]
+    body += f'<g transform="rotate({tilt_deg} {pivot_x:.1f} {pivot_y:.1f})">'
+    stack_y = py - 6  # block bottoms grow upward from just above the plinth
+    for (bw, bh, fill, hi) in blocks:
+        x0 = pivot_x - bw / 2
+        x1 = pivot_x + bw / 2
+        y0 = stack_y - bh
+        y1 = stack_y
+        corners = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
+        body += filled_poly(corners, fill)
+        # top-left highlight band
+        band = [(x0, y0), (x1, y0), (x1, y0 + 14), (x0 + 14, y0 + 14),
+                (x0 + 14, y1), (x0, y1)]
+        body += (f'<path d="{sketch_path(band, True, 0.7)}" '
+                 f'fill="{hi}" opacity="0.55" stroke="none"/>')
+        # bottom-right shadow
+        body += hatch(x0, y0 + bh * 0.55, bw, bh * 0.45, INK, gap=9, opacity=0.18)
+        # heavy outline (icon needs strong silhouette at small sizes)
+        body += sketch_outline(corners, True, INK, 7, 2, 2.4)
+        # corner rivets, sized to read at 60×60
+        m = 32
+        for (rx, ry) in [(x0 + m, y0 + m), (x1 - m, y0 + m),
+                         (x1 - m, y1 - m), (x0 + m, y1 - m)]:
+            body += rivet(rx, ry, 14)
+        stack_y = y0 - 4  # tight gap between blocks
+    body += '</g>'
+
+    # a steam puff escaping behind the leaning side — signature steampunk detail
+    for (sx, sy, sr, op) in [(W * 0.80, H * 0.18, 70, 0.55),
+                              (W * 0.86, H * 0.30, 50, 0.40),
+                              (W * 0.91, H * 0.40, 36, 0.28)]:
+        body += (f'<circle cx="{sx:.1f}" cy="{sy:.1f}" r="{sr:.1f}" '
+                 f'fill="{STEAM}" opacity="{op}" stroke="none"/>')
     reg("appicon", W, H, body)
 
 

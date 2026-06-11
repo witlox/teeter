@@ -83,3 +83,8 @@ venv/
 .idea/
 *.swp
 *~
+
+# Local dev artefacts (not tracked)
+screen-*.png
+/screenshots/
+Configuration/Local.xcconfig

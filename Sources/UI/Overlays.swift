@@ -1,10 +1,8 @@
 import SwiftUI
 
 /// Fired the instant the tower passes the stability threshold. Physics is in slow-mo
-/// behind this, so the player sees the teeter. Two branches:
-///   - a save is available (free, or owned from the unlock) -> "CATCH IT"
-///   - out of saves and not yet unlocked -> the high-intent unlock offer
-///     ("I was that close"): buying both unlocks 3/run AND catches this tower.
+/// behind this, so the player sees the teeter. Player picks: catch (spend a save) or
+/// let it fall (bank zero).
 struct CatchOfferView: View {
     @EnvironmentObject var model: GameViewModel
     var body: some View {
@@ -17,17 +15,9 @@ struct CatchOfferView: View {
                 Text("\(model.height) floors about to fall")
                     .font(Theme.body(15)).foregroundColor(Theme.ink)
 
-                if model.catchesRemaining > 0 {
-                    BrassButton(title: "CATCH IT",
-                                subtitle: "\(model.catchesRemaining) of \(model.catchCap) left") {
-                        model.takeCatch()
-                    }
-                } else {
-                    // Out of saves, not unlocked. Peak loss-aversion: unlock + save this run.
-                    BrassButton(title: "UNLOCK 3 SAVES",
-                                subtitle: "\(model.unlockPriceText) · catch this tower") {
-                        model.buyUnlock(reviveNow: true)
-                    }
+                BrassButton(title: "CATCH IT",
+                            subtitle: "\(model.catchesRemaining) of \(model.catchCap) left") {
+                    model.takeCatch()
                 }
                 Button("let it fall") { Haptics.warning(); model.declineCatch() }
                     .font(Theme.body(14)).foregroundColor(Theme.brassDk)
@@ -51,13 +41,6 @@ struct GameOverView: View {
                 Text("best — \(model.best)")
                     .font(Theme.body(14)).foregroundColor(Theme.brassHi)
                 BrassButton(title: "BUILD AGAIN") { model.startRun() }
-                if !model.isUnlocked {
-                    // Soft second-chance placement (the run is already lost; unlocks future runs).
-                    Button("unlock 3 saves/run · \(model.unlockPriceText)") {
-                        model.buyUnlock(reviveNow: false)
-                    }
-                    .font(Theme.body(13)).foregroundColor(Theme.copper)
-                }
                 Button("menu") { model.backToMenu() }
                     .font(Theme.body(14)).foregroundColor(Theme.brassHi)
             }

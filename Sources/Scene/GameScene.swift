@@ -66,9 +66,8 @@ final class GameScene: SKScene {
 
     /// Capture the current tower as an image for the share card.
     func snapshotTower() -> UIImage? {
-        guard let view = self.view, let tex = view.texture(from: self),
-              let cg = tex.cgImage() else { return nil }
-        return UIImage(cgImage: cg)
+        guard let view = self.view, let tex = view.texture(from: self) else { return nil }
+        return UIImage(cgImage: tex.cgImage())
     }
 
     func reset() {
@@ -149,7 +148,9 @@ final class GameScene: SKScene {
         followCamera(dt: dt)
 
         if state == .falling, let a = active {
-            if a.isStill {
+            if a.position.y < base.position.y - Tuning.missBelowBase {
+                missActiveBlock(a)
+            } else if a.isStill {
                 stillFrames += 1
                 if stillFrames >= Tuning.settleFrames { bankFloor(a) }
             } else {
@@ -158,6 +159,16 @@ final class GameScene: SKScene {
         }
 
         if state == .falling || state == .swinging { evaluateStability() }
+    }
+
+    /// Block missed the tower and fell off the world. Free respawn.
+    private func missActiveBlock(_ block: Block) {
+        Effects.dust(at: CGPoint(x: block.position.x, y: base.position.y), in: self)
+        Haptics.light()
+        block.removeFromParent()
+        active = nil
+        stillFrames = 0
+        spawnNext()
     }
 
     private func bankFloor(_ block: Block) {

@@ -1,0 +1,7 @@
+// Copy this to Local.xcconfig and fill in your Apple Developer team ID.
+// bootstrap.sh does this for you automatically the first time you run it.
+//
+// Find your team ID with:
+//   security find-certificate -c "Apple Development" -p | openssl x509 -noout -subject
+// — the OU field (10 chars) is the team ID.
+DEVELOPMENT_TEAM =

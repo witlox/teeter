@@ -85,15 +85,8 @@ struct MenuView: View {
             }
             Spacer()
             BrassButton(title: "BUILD") { model.startRun() }
-            if model.isUnlocked {
-                Text("3 saves per run unlocked").font(Theme.body(13)).foregroundColor(Theme.patina)
-            } else {
-                BrassButton(title: "Unlock 3 Revives", subtitle: model.unlockPriceText) {
-                    model.buyUnlock(reviveNow: false)
-                }
-                Button("Restore") { model.restorePurchases() }
-                    .font(Theme.body(13)).foregroundColor(Theme.brassDk)
-            }
+            Text("\(Tuning.catchesPerRun) saves per run")
+                .font(Theme.body(13)).foregroundColor(Theme.patina)
             Spacer().frame(height: 30)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

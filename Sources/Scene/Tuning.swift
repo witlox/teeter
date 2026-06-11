@@ -4,7 +4,7 @@ import CoreGraphics
 ///  - failure must be skill-legible (telegraphed wobble before topple)
 ///  - difficulty escalates on TWO legible axes only: shape awkwardness + crane swing
 ///  - reward (height) and risk (instability) rise together for free
-///  - monetisation is IAP-only (no ads): 1 free save/run, unlock raises it to 3
+///  - game is fully free: 3 saves/run, no IAP, no ads
 enum Tuning {
     // World / physics
     static let unit: CGFloat = 46          // points per shape cell
@@ -26,6 +26,10 @@ enum Tuning {
     static let toppleLean: Double = 1.0
     /// Or a block physically falling below the structure by this many points = topple.
     static let fallThreshold: CGFloat = unit * 1.4
+    /// Active (falling) block this far below the base = a miss. Free respawn; no save spent.
+    /// A miss is a swing-read mistake, not a structural failure — penalising it would
+    /// punish bad reads instead of bad placements, which isn't the press-your-luck contract.
+    static let missBelowBase: CGFloat = unit * 2
 
     // Crane / swing (legible difficulty axis #2)
     static let craneBaseSwing: CGFloat = 70       // px amplitude at floor 0
@@ -39,9 +43,9 @@ enum Tuning {
     static let perfectTolerance: CGFloat = unit * 0.16  // centre offset that counts as "perfect"
     static let perfectStabilityBonus: Double = 0.12     // perfect drops shed this much lean
 
-    // Saves ("catches") economy — IAP-only, no ads
-    static let defaultCatchesPerRun: Int = 1      // free save every run
-    static let maxCatchesPerRun: Int = 3          // cap after the one-time "Unlock 3 Revives" IAP
+    // Saves ("catches") — free, every run. 3 is the only number; the cap is what creates
+    // press-your-luck tension on the third save without needing a paid tier above it.
+    static let catchesPerRun: Int = 3
 
     // Shape introduction schedule (floor thresholds). The single complexity axis.
     static func shapeMenu(forFloor f: Int) -> [BlockKind] {

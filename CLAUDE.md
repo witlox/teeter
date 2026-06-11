@@ -9,9 +9,9 @@ re-architect around them.
 A steampunk press-your-luck stacker. A crane swings a block; tap to drop it; physics
 settles it onto the tower. Height = score. You **bank** your height by hitting FINISH
 ("bank by not placing"). If the tower topples you lose **everything** unless you spend one
-of your saves ("catches") to snap back to the last stable
-state. You get **1 free save per run**; a one-time IAP raises that to 3. No ads. The
-shareable picture of your standing tower is the whole marketing plan.
+of your **3 free saves per run** ("catches") to snap back to the last stable state. The
+shareable picture of your standing tower is the whole marketing plan. The game is **fully
+free** — no IAP, no ads, no third-party SDKs. Ships on **iPhone and iPad** (portrait).
 
 ## Invariants — do NOT weaken these without saying so explicitly
 1. **Failure is skill-legible.** The lean gauge (`LeanGauge` + `StabilityMonitor`) must
@@ -19,32 +19,31 @@ shareable picture of your standing tower is the whole marketing plan.
    tuning, keep the warn→topple telegraph intact (`Tuning.warnLean` < `Tuning.toppleLean`).
 2. **Die = 0.** A topple with no save banks zero (`GameViewModel.declineCatch`). Only a
    voluntary `cashOut()` updates `best`. Do not "consolation-score" a topple.
-3. **Saves are free and capped per run.** 1/run by default, 3/run once unlocked
-   (`Tuning.defaultCatchesPerRun` / `maxCatchesPerRun`). Taking a save costs nothing —
-   no ad, no currency (`GameViewModel.takeCatch`).
-4. **IAP-only, NO ADS.** One non-consumable "Unlock 3 Revives" ($2.99, Family Sharing on)
-   raises the cap 1→3 forever — a strict upgrade, never a penalty. One flag: `isUnlocked`.
-   Never gate core play behind it. Do not add any ad SDK, banner, interstitial, or rewarded
-   video; the whole point of this build is that it's ad-free.
+3. **Saves are free and capped per run.** 3/run, every run (`Tuning.catchesPerRun`).
+   Taking a save costs nothing — no ad, no currency, no unlock
+   (`GameViewModel.takeCatch`). The cap is the only friction; it preserves "die = 0"
+   tension on the third save.
+4. **Fully free — no IAP, NO ADS, NO third-party SDKs.** Do not add StoreKit, ad SDKs,
+   banners, interstitials, rewarded video, analytics SDKs, or any "unlock more"
+   monetization. The whole point of this build is friction-free: nothing to review,
+   nothing to gate, nothing to track. Anything that would have a paid version stays out.
 5. **Two legible difficulty axes only:** shape awkwardness (`Tuning.shapeMenu`) and crane
    swing growth (`Crane.configure`). The "weird gravity" idea is deliberately expressed as
    *crane swing*, not actual gravity changes. Don't add a third hidden axis.
-6. **The unlock offer is placed, not nagged.** It surfaces at the highest-intent moment —
-   toppling with no free save left ("I was that close"), where buying both unlocks and
-   saves the current run (`buyUnlock(reviveNow:)`). A soft repeat sits on the game-over and
-   menu screens. Keep it an offer; if it ever feels naggy, frequency-gate it.
-7. **The hero verb is tap-to-drop.** FINISH (cash-out) stays a secondary control.
+6. **The hero verb is tap-to-drop.** FINISH (cash-out) stays a secondary control.
 
 ## Build / run
 ```bash
 brew install xcodegen        # one time
 ./scripts/bootstrap.sh       # generates Teeter.xcodeproj and opens it
 ```
-Then in Xcode: select an iPhone simulator and Run. There are no ads or third-party SDKs,
-so the **full loop is playable immediately**. The IAP uses StoreKit 2.
+Then in Xcode: select an iPhone or iPad simulator and Run. There are no SDKs or accounts
+to wire up, so the **full loop is playable immediately**.
 
-For IAP testing: Edit Scheme → Run → Options → StoreKit Configuration →
-`Configuration/Teeter.storekit`.
+> Note on the Claude harness: `xcodebuild` from inside Claude Code may fail at the asset
+> catalog step because Xcode 26 spawns `AssetCatalogSimulatorAgent` and the harness
+> sandbox can't write to `~/Library/Developer/CoreSimulator/`. Run the build from Xcode
+> or a normal terminal.
 
 ## Expected fix-up areas (look here first if it doesn't build)
 - `SKPhysicsBody(texture:size:)` alpha bodies for L/T/triangle: verify the texture is
@@ -56,9 +55,9 @@ For IAP testing: Edit Scheme → Run → Options → StoreKit Configuration →
 - `snapshotTower()` uses `view.texture(from:)`; confirm it captures the framed tower.
 
 ## If you must cut scope, cut in this order (and stop early if it already feels good)
-Keep first: rectangles-only + swing + settle + lean gauge + topple + 1 free save. Then add
-back, in order: shape variety → unlock-3 IAP → share card → perfect-placement bonus →
-swing growth → (later) wind, ghost-of-best, leaderboard.
+Keep first: rectangles-only + swing + settle + lean gauge + topple + 3 saves. Then add
+back, in order: shape variety → share card → perfect-placement bonus → swing growth →
+(later) wind, ghost-of-best, iPad-specific framing tweaks.
 
 ## Art
 All sprites are generated by `Art/generate_art.py` into `Sources/Resources/Assets.xcassets`.
